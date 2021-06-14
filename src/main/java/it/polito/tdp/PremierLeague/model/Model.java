@@ -18,11 +18,16 @@ public class Model {
 	PremierLeagueDAO dao;
 	private Graph<Player, DefaultWeightedEdge> grafo;
 	private Map<Integer, Player> idMap;
-	
+	private Simulazione sim;
+	private Map<Integer, Team> squadre;
+
 	public Model() {
 		this.dao = new PremierLeagueDAO();
 		this.idMap = new HashMap<Integer,Player>();
 		this.dao.listAllPlayers(idMap);
+		this.sim = new Simulazione();
+		this.squadre = new HashMap<>();
+		this.caricaSquadre();
 	}
 	
 	public void creaGrafo(Match m) {
@@ -44,6 +49,15 @@ public class Model {
 					Graphs.addEdgeWithVertices(this.grafo, a.getP2(), a.getP1(), (-1) * a.getPeso());
 				}
 			}
+		}
+		
+	}
+	
+	public void caricaSquadre() {
+		List<Team> squad = this.dao.listAllTeams();
+		
+		for (Team t : squad) {
+			this.squadre.put(t.getTeamID(), t);
 		}
 		
 	}
@@ -105,4 +119,24 @@ public class Model {
 		return this.grafo;
 	}
 	
+	public void simula(int n, Match m) {
+		this.sim.init(n, m, squadre, getMigliore());
+		this.sim.run();
+	}
+	
+	public int getGolA() {
+		return this.sim.getGolA();
+	}
+	
+	public int getGolB() {
+		return this.sim.getGolB();
+	}
+	
+	public int getEspA() {
+		return 11 - this.sim.getGiocatoriA();
+	}
+	
+	public int getEspB() {
+		return 11 - this.sim.getGiocatoriB();
+	}
 }

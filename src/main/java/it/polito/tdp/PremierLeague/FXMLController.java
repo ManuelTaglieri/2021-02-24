@@ -77,6 +77,32 @@ public class FXMLController {
     
     @FXML
     void doSimula(ActionEvent event) {
+    	
+    	txtResult.clear();
+    	Match m = cmbMatch.getValue();
+    	if (m == null) {
+    		txtResult.appendText("Seleziona un match!");
+    		return;
+    	}
+    	if (this.model.getGrafo() == null) {
+    		txtResult.appendText("Crea prima il grafo!");
+    		return;
+    	}
+    	try {
+    		int n = Integer.parseInt(this.txtN.getText());
+    		if (n<1) {
+    			txtResult.setText("Deve essere simulata almeno un'azione");
+    			return;
+    		}
+    		this.model.simula(n, m);
+    		txtResult.setText("Risultato: "+this.model.getGolA()+"-"+this.model.getGolB()+"\n");
+    		txtResult.appendText("Espulsi: "+this.model.getEspA()+"-"+this.model.getEspB()+"\n");
+    		
+    		
+    	} catch (NumberFormatException e) {
+    		txtResult.setText("Non hai inserito un numero valido di azioni da simulare!");
+    		return;
+    	}
 
     }
 

@@ -166,4 +166,28 @@ public class PremierLeagueDAO {
 		}
 		
 	}
+	
+	public Team getTeamOfPlayer (Integer playerID) {
+		String sql = "SELECT DISTINCT t.teamID, t.Name "
+				+ "FROM actions a, teams t "
+				+ "WHERE a.TeamID=t.TeamID AND playerID = ?";
+		
+		Connection conn = DBConnect.getConnection();
+
+		try {
+			PreparedStatement st = conn.prepareStatement(sql);
+			st.setInt(1, playerID);
+			ResultSet res = st.executeQuery();
+			Team t = null;
+			while (res.next()) {
+				t = new Team(res.getInt("teamID"), res.getString("Name"));
+			}
+			conn.close();
+			return t;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }
